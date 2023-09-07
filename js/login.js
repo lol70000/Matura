@@ -32,4 +32,4 @@ function login(event){
 }
 
 const button = document.getElementById("submit")
-button.onclick = login
+button.onclick = login()

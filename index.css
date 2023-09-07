@@ -23,6 +23,22 @@ body{
 .input{
     background-color: rgb(15, 8, 75);
     color: rgb(213, 172, 78);
+    width: 200px;
+    height: 22.5px;
+}
+
+.input2{
+    background-color: rgb(15, 8, 75);
+    color: rgb(213, 172, 78);
+    width: fit-content;
+    height: 25px;
+}
+
+.inputtime{
+    background-color: rgb(15, 8, 75);
+    color: rgb(213, 172, 78);
+    width: fit-content;
+    height: 25px;
 }
 
 .submit{
@@ -57,4 +73,8 @@ input::-webkit-inner-spin-button {
 
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.tablecolor{
+    background-color: rgb(54, 69, 59);
 }
