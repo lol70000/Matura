@@ -11,9 +11,29 @@ body{
     text-align: center;
 }
 
+.table-team-center{
+    text-align: center;
+    align-content: center;
+    width: auto;
+    margin-left:auto;
+}
+
+.table-center{
+    text-align: center;
+    margin-left: 30%;
+    width: 40%;
+}
+
 .title{
     font: 30px sans-serif;
     color: rgb(213, 172, 78);
+}
+
+.text-minimise{
+    color: rgb(213, 172, 78);
+    width:max-content;
+    text-align: center;
+    margin:auto;
 }
 
 .text{
@@ -23,8 +43,8 @@ body{
 .input{
     background-color: rgb(15, 8, 75);
     color: rgb(213, 172, 78);
-    width: 200px;
-    height: 22.5px;
+    width: 420px;
+    height: 25px;
 }
 
 .input2{
@@ -77,4 +97,34 @@ input[type=number] {
 
 .tablecolor{
     background-color: rgb(54, 69, 59);
+}
+
+/*This code has been inspired by https://stackoverflow.com/questions/33878539/is-there-an-html-entity-for-an-info-icon*/
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+  
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+  
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+}
+  
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+.span-info {
+    content: "\2139";
 }

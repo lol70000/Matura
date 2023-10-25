@@ -18,13 +18,33 @@
             <input class="input2" type="number" id="number_Gyms" placeholder="Anzahl der Plätze" min="1">
             <input class="input2" type="number" id="time_per_game" placeholder="Spielzeit" min="1">
             <input class="input2" type="number" id="time_per_break" placeholder="Pausenzeit" min="1">
-            <input class="inputtime" type="time" id="time_of_start" placeholder="Start Zeit">
             <button type="submit" id="fertig">hello</button>
+        </div>
+        <div class="text-center">
+            <label class="text-minimise">Start Time:</label>
+            <input class="inputtime" type="time" id="time_of_start" placeholder="Start Zeit">
+            <br>
+            <label class="text-minimise">Finish Time:</label>
+            <!--The folowing div was inspired by https://stackoverflow.com/questions/33878539/is-there-an-html-entity-for-an-info-icon-->
+            <div class="tooltip span-info">
+                <span class="tooltiptext">Tooltip text</span>
+            </div>
+            <input class="inputtime" type="time" id="time_of_end" placeholder="End Zeit">
         </div>
         <div>
             <p id="error_message_teams" class="text text-center"></p>
         </div>
-        <table class="table table-bordered text-center">
+        <div id="Table_input_names" class="center">
+        </div>
+        <table class="table table-bordered table-center">
+            <thead>
+                <tr id="Table-head-teams">
+                </tr>
+            </thead>
+            <tbody id="Table_body_teams">
+            </tbody>
+        </table>
+        <table class="table table-bordered table-team-center">
             <thead>
                 <tr id="Table-head">
                 </tr>
@@ -32,6 +52,9 @@
             <tbody id="Table_body">
             </tbody>
         </table>
+        <div class="text-center">
+            <button type="button" id="csv_export">Export</button>
+        </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
         <script src="/js/home.js"></script>

@@ -62,6 +62,98 @@ function fillUp(matchesOnPlaces,maxim,number_gyms){
 return matchesOnPlaces;
 }
 
+function teams_table_input(number_teams){
+    //Here all needed Variables are declared
+    let teamtableinputbody = document.getElementById("Table_input_names");
+    const basestring = "Team";
+    let stri = "";
+    let diving = "";
+    //In this loop a input for each Team is created in order to be able to input a team chief for each team
+    headerelement = document.createElement("p");
+    headerelement.setAttribute("class","text-center text");
+    headerelement.innerText = "Name des Team-Chef's"
+    teamtableinputbody.appendChild(headerelement);
+    for(i = 0; i<number_teams;i++){
+        stri += basestring;
+        stri += i+1;
+        diving += i;
+        //first a div is created, so that the inputs are stacked verticaly and not horizontaly
+        inputingelement = document.createElement("div");
+        inputingelement.setAttribute("id",stri);
+        inputingelement.setAttribute("class","center");
+        teamtableinputbody.appendChild(inputingelement);
+        teamtableinputting = document.getElementById(stri);
+
+        //here the input is created with the Text "Team X" for each team with X being the according number
+        tableinputelement = document.createElement("input");
+        tableinputelement.setAttribute("class","input center");
+        tableinputelement.setAttribute("type","text");
+        tableinputelement.setAttribute("id",diving);
+        tableinputelement.setAttribute("placeholder",stri);
+        teamtableinputting.appendChild(tableinputelement);
+
+        stri = "";
+        diving = "";
+    }
+    //Here the button is created wich allows you to send the results inorder for the table to be created
+    tableinputelement = document.createElement("div");
+    tableinputelement.setAttribute("class","center");
+    tableinputelement.setAttribute("id","input_send");
+    teamtableinputbody.appendChild(tableinputelement);
+    input_div = document.getElementById("input_send");
+
+    tableinputelement = document.createElement("button");
+    tableinputelement.setAttribute("class","center");
+    tableinputelement.setAttribute("type","submit");
+    tableinputelement.setAttribute("id","sending_teams_table");
+    tableinputelement.innerText = "send";
+    input_div.appendChild(tableinputelement);
+    document.getElementById('sending_teams_table').onclick = teams_table;
+}
+
+function teams_table(){
+    let number_teams = parseInt(document.getElementById("number_teams").value);
+    let teamtablebody = document.getElementById("Table_body_teams");
+    let teamtablehead = document.getElementById("Table-head-teams");
+    const rows = "Row";
+    let rowname = "";
+    let stringname = "";
+    teamtablebody.innerHTML = '';
+    teamtablehead.innerHTML = '';
+    let headelemens= ["Team","Chef"];
+    for(x=0;x<2;x++){
+        let tableheadelement = document.createElement("th");
+        tableheadelement.innerText = headelemens[x];
+        tableheadelement.setAttribute("scope","col");
+        teamtablehead.appendChild(tableheadelement);
+    }
+    for(i=0;i<number_teams;i++){
+        rowname += rows;
+        rowname += i;
+        stringname += i+1;
+        input = document.getElementById(i).value;
+        tablebodyelement = document.createElement("tr");
+        tablebodyelement.setAttribute("class","table-active")
+        tablebodyelement.setAttribute("id",rowname);
+        teamtablebody.appendChild(tablebodyelement);
+        
+        team_table_row = document.getElementById(rowname);
+        tablebodyelement = document.createElement("th");
+        tablebodyelement.setAttribute("scope","row");
+        tablebodyelement.innerText = stringname;
+        team_table_row.appendChild(tablebodyelement);
+
+        tablebodyelement = document.createElement("th");
+        tablebodyelement.innerText = input;
+        team_table_row.appendChild(tablebodyelement);
+
+        rowname = "";
+        stringname = "";
+    }
+    document.getElementById("Table_input_names").innerHTML = "";
+}
+
+let counter = 0;
 //Here everything is put into the table all of this is done in one function because passing elements from function to function (in my experience) dosn't work all the time
 function teams_to_table(){
     //here most variables, lists and constants are declared
@@ -73,12 +165,21 @@ function teams_to_table(){
     const number_gyms = parseInt(document.getElementById("number_Gyms").value);
     const number_teams = document.getElementById("number_teams").value;
     let time_start = document.getElementById("time_of_start").value;
-    const time_game = document.getElementById("time_per_game").value;
+    let time_game = document.getElementById("time_per_game").value;
     const time_break = document.getElementById("time_per_break").value;
     let teams = makeTeams(number_teams);
     let matches = getAllCombinations(teams);
-    let matchOnPlace = bringMatchesToPlaces(matches,number_gyms);
+    let rawmatchOnPlace = bringMatchesToPlaces(matches,number_gyms);
+    let matchOnPlace = rawmatchOnPlace[0];
+    let matchesInRows = rawmatchOnPlace[1];
     let maximum = getMaxlength(matchOnPlace,number_gyms);
+    let time_stop = document.getElementById("time_of_end").value;
+    let times = [];
+
+    if(counter == 0){
+        teams_table_input(number_teams);
+    }
+    counter += 1;
 
     //here the list of the games divided up on the places is filled so that all places have an equal amount of games
     matchOnPlace = fillUp(matchOnPlace,maximum,number_gyms);
@@ -92,6 +193,18 @@ function teams_to_table(){
         document.getElementById("error_message_teams").innerHTML = ""
     }
 
+    if(time_stop != "" && time_game == 0){
+        console.log("calculating...")
+        list_start = time_start.split(":");
+        list_stop = time_stop.split(":");
+        start_hour = parseInt(list_start[0]);
+        stop_hour = parseInt(list_stop[0]);
+        time_for_turnier = stop_hour-start_hour;
+        min_for_turnier = time_for_turnier * 60;
+        time_for_games = min_for_turnier-(matches.length * time_break);
+        time_game = Math.floor(time_for_games/(matches.length/number_gyms));
+    }
+    
     //here we split the set start time into hours and minutes(so that i didn't have to deal with the JavaScript time format)
     time = time_start.split(':');
     let minutes = parseInt(time[1]);
@@ -125,9 +238,12 @@ function teams_to_table(){
             //here we add the break time and the check if the minutes are over 60 
             //if true we subtract 60 minutes from the minutes and add a hour
             minutes = minutes + time_break * 1;
-            if (minutes>=60){
+            while(minutes>=60){
                 minutes-=60;
                 hours += 1;
+            }
+            while(hours>=24){
+                hours -=24
             }
             status = '';
             //here we check if hours or minutes are under 9 because if soo we would have to add a zero before it in order to stay true to the format of the first time
@@ -145,9 +261,12 @@ function teams_to_table(){
         stirng += status;
         stirng += ' - ';
         minutes = minutes + time_game * 1;
-        if (minutes>=60){
+        while (minutes>=60){
             minutes-=60;
             hours += 1;
+        }
+        while(hours>=24){
+            hours -=24
         }
         status = '';
         if(hours <= 9){
@@ -160,6 +279,7 @@ function teams_to_table(){
         }
         status += minutes;
         stirng += status;
+        times.push(stirng);
         //here the text for the time element of the tabe is added to the element and it is the added to the table as a child of the row
         tablebodyelement.innerText = stirng;
         tablebodyrow.appendChild(tablebodyelement);
@@ -167,14 +287,15 @@ function teams_to_table(){
         for (x = 0; x < number_gyms; x++){
             match ='';
             match += matchOnPlace[x][i-1][0];
-            match += ' : '
+            match += ' : ';
             match += matchOnPlace[x][i-1][1];
             tablebodyelement = document.createElement("th");
-            tablebodyelement.setAttribute("scope","row")
             tablebodyelement.innerText = match;
-            tablebodyrow.appendChild(tablebodyelement)
+            tablebodyrow.appendChild(tablebodyelement);
         }
     }
+    const csv_button = document.getElementById("csv_export");
+    csv_button.addEventListener('click',csv_prepare(matchesInRows,times,number_gyms));
 }
 
 function make_Table(){
@@ -184,6 +305,7 @@ function make_Table(){
     const numberGyms = document.getElementById("number_Gyms").value;
     tableheadrow.innerHTML = "";
     //Here we add the time since it only needs to be added once
+    tableheadelement.setAttribute("scope","col");
     tableheadelement.innerText = 'Zeit';
     tableheadrow.appendChild(tableheadelement);
     //here we add a element for each place witch the corresponding name
@@ -191,6 +313,7 @@ function make_Table(){
         tableheadelement = document.createElement("th");
         let str = 'Halle ';
         str += i;
+        tableheadelement.setAttribute("scope","col");
         tableheadelement.innerText = str;
         tableheadrow.appendChild(tableheadelement);
     }
@@ -202,29 +325,29 @@ function make_Table(){
 
 function getAllCombinations(arr) {
     const combinations = [];
-  
+
     for (let i = 0; i < arr.length; i++) {
         for (let j = i + 1; j < arr.length; j++) {
             combinations.push([arr[i], arr[j]]);
         }
     }
-    
+    console.log(combinations)
     return combinations;
 }
-  
+
 // gets a random element from a list
 function getRandomElement(liste) {
     const randomIndex = Math.floor(Math.random() * liste.length);
     return liste[randomIndex];
 }
-  
-  // removes a specific element from a list
+
+// removes a specific element from a list
 function arrayRemove(arr, value) {
     return arr.filter(function (geeks) {
         return geeks != value;
     });
 }
-  
+
 function oneTeamIsAlreadyInRow(row, teams) {
     if (row.includes(teams[0])) {
         return true;
@@ -234,7 +357,7 @@ function oneTeamIsAlreadyInRow(row, teams) {
     }
     return false;
 }
-  
+
 function bringMatchesToPlaces(matches, numberOfPlaces) {
     let gamesOnPlaces = [];
     let matchesNotDistributed = matches;
@@ -258,7 +381,7 @@ function bringMatchesToPlaces(matches, numberOfPlaces) {
     while (matchesNotDistributed.length > 0) {
         let randomMatch = getRandomElement(matchesNotDistributed);
         let rowToPlaceThisMatchIn = teamsInRows.length;
-      
+
         // team A or B already in row x?
         for (let i = 0; i < teamsInRows.length; i++) {
             if (!oneTeamIsAlreadyInRow(teamsInRows[i], randomMatch) && matchesInRows[i].length < numberOfPlaces) {
@@ -266,7 +389,7 @@ function bringMatchesToPlaces(matches, numberOfPlaces) {
                 break;
             }
         }
-      
+
         // Diese Teams werden in eine neue Zeile gespeichert
         if (rowToPlaceThisMatchIn >= teamsInRows.length) {
             // console.log("new row: " + rowToPlaceThisMatchIn);
@@ -289,10 +412,52 @@ function bringMatchesToPlaces(matches, numberOfPlaces) {
             gamesOnPlaces[j].push(matchesInRows[i][j]);
         }
     }
-    
+    let outpt = [];
+    outpt.push(gamesOnPlaces);
+    outpt.push(matchesInRows)
     //console.log(gamesOnPlaces);
-    return gamesOnPlaces;
+    return outpt;
+}
+
+function csv_prepare(data_table,table_time,number_of_places){
+    let header = ["Zeit"];
+    const bossstring = "Halle";
+    let string = "";
+    let list_element = "";
+    data_table.forEach(element => {
+        element.forEach(element2 => {
+            list_element += element2[0];
+            list_element += ":"
+            list_element += element2[1];
+            element2.splice(0,2);
+            element2.push(list_element);
+            list_element = "";
+            console.log(element2);
+        });
+    });
+    for(y=0;y<number_of_places;y++){
+        string += bossstring;
+        string += y+1;
+        header.push(string);
+        string = "";
+    }
+    x=0;
+    data_table.forEach(element => {
+        element.splice(0,0,table_time[x]);
+        x++;
+    });
+    data_table.splice(0,0,header);
+
+    const main_csv = data_table.map(row => row.join(',')).join('\n');
+
+    const blob = new Blob([main_csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.setAttribute('href',url);
+    a.setAttribute('download','Spielplan.csv');
+    a.click()
 }
 
 //here the first function is called and the whole process is started
 document.getElementById('fertig').onclick = make_Table;
+const csv_button = document.getElementById("csv_export")
