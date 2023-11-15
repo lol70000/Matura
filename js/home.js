@@ -1,22 +1,5 @@
-let postObj = { 
-    id: 1,
-    title: "What is AJAX", 
-    body: "AJAX stands for Asynchronous JavaScript..."
-}
-
-function run(usern, passw) {
-    let post = JSON.stringify(postObj)
-    const url = "registration.php"
-    let xhr = new XMLHttpRequest()
-    xhr.open('POST', url, true)
-    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
-    xhr.send("username="+usern+"&password="+passw);
-    xhr.onload = function () {
-        if(xhr.status === 201) {
-            console.log("Post successfully created!")
-        }
-    }
-};
+let csv_matches_inRow = []
+let csv_times = []
 
 //Here all Teams are added into a list.
 function makeTeams(number_teams){
@@ -73,7 +56,7 @@ function teams_table_input(number_teams){
     headerelement.setAttribute("class","text-center text");
     headerelement.innerText = "Name des Team-Chef's"
     teamtableinputbody.appendChild(headerelement);
-    for(i = 0; i<number_teams;i++){
+    for(i = 0; i<number_teams; i++){
         stri += basestring;
         stri += i+1;
         diving += i;
@@ -237,7 +220,7 @@ function teams_to_table(){
         if(i != 1){
             //here we add the break time and the check if the minutes are over 60 
             //if true we subtract 60 minutes from the minutes and add a hour
-            minutes = minutes + time_break * 1;
+            minutes = minutes + time_break;
             while(minutes>=60){
                 minutes-=60;
                 hours += 1;
@@ -294,8 +277,10 @@ function teams_to_table(){
             tablebodyrow.appendChild(tablebodyelement);
         }
     }
-    const csv_button = document.getElementById("csv_export");
-    csv_button.addEventListener('click',csv_prepare(matchesInRows,times,number_gyms));
+    //const csv_button = document.getElementById("csv_export");
+    //csv_button.onclick = csv_prepare(matchesInRows,times,number_gyms);
+    csv_times = times;
+    csv_matches_inRow = matchesInRows;
 }
 
 function make_Table(){
@@ -419,11 +404,16 @@ function bringMatchesToPlaces(matches, numberOfPlaces) {
     return outpt;
 }
 
-function csv_prepare(data_table,table_time,number_of_places){
+function csv_prepare(){
+    //First all the neede variables/constants are declared
+    number_of_places = parseInt(document.getElementById("number_Gyms").value);
     let header = ["Zeit"];
     const bossstring = "Halle";
     let string = "";
     let list_element = "";
+    data_table=csv_matches_inRow;
+    table_time = csv_times;
+    //then all the table elements are made to look like the ones that are outputed to the Website
     data_table.forEach(element => {
         element.forEach(element2 => {
             list_element += element2[0];
@@ -432,9 +422,10 @@ function csv_prepare(data_table,table_time,number_of_places){
             element2.splice(0,2);
             element2.push(list_element);
             list_element = "";
-            console.log(element2);
         });
     });
+
+    //here here all the headers for the Table are produced
     for(y=0;y<number_of_places;y++){
         string += bossstring;
         string += y+1;
@@ -442,14 +433,18 @@ function csv_prepare(data_table,table_time,number_of_places){
         string = "";
     }
     x=0;
+    //In this loop all the times are inputed to the accordning rows as the first element so that the Format of the Website is the same as the format of the Exported file
     data_table.forEach(element => {
         element.splice(0,0,table_time[x]);
         x++;
     });
+    //The header is inserted as the first elementin the list.
     data_table.splice(0,0,header);
 
+    //here the list is interpreted into a .csv format
     const main_csv = data_table.map(row => row.join(',')).join('\n');
 
+    //here the export is prepared
     const blob = new Blob([main_csv], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -460,4 +455,4 @@ function csv_prepare(data_table,table_time,number_of_places){
 
 //here the first function is called and the whole process is started
 document.getElementById('fertig').onclick = make_Table;
-const csv_button = document.getElementById("csv_export")
+document.getElementById('csv_export').onclick = csv_prepare;

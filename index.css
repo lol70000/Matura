@@ -15,7 +15,7 @@ body{
     text-align: center;
     align-content: center;
     width: auto;
-    margin-left:auto;
+    margin: left 10%;;
 }
 
 .table-center{
@@ -87,12 +87,12 @@ body{
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 input[type=number] {
-  -moz-appearance: textfield;
+    -moz-appearance: textfield;
 }
 
 .tablecolor{
@@ -106,7 +106,6 @@ input[type=number] {
     display: inline-block;
     border-bottom: 1px dotted black;
 }
-  
 .tooltip .tooltiptext {
     visibility: hidden;
     width: 120px;
@@ -115,12 +114,11 @@ input[type=number] {
     text-align: center;
     border-radius: 6px;
     padding: 5px 0;
-  
     /* Position the tooltip */
     position: absolute;
     z-index: 1;
 }
-  
+
 .tooltip:hover .tooltiptext {
     visibility: visible;
 }
