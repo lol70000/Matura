@@ -148,15 +148,15 @@ function teams_to_table(){
     const number_gyms = parseInt(document.getElementById("number_Gyms").value);
     const number_teams = document.getElementById("number_teams").value;
     let time_start = document.getElementById("time_of_start").value;
-    let time_game = document.getElementById("time_per_game").value;
-    const time_break = document.getElementById("time_per_break").value;
+    let time_game = parseInt(document.getElementById("time_per_game").value);
+    const time_break = parseInt(document.getElementById("time_per_break").value);
     let teams = makeTeams(number_teams);
     let matches = getAllCombinations(teams);
     let rawmatchOnPlace = bringMatchesToPlaces(matches,number_gyms);
     let matchOnPlace = rawmatchOnPlace[0];
     let matchesInRows = rawmatchOnPlace[1];
     let maximum = getMaxlength(matchOnPlace,number_gyms);
-    let time_stop = document.getElementById("time_of_end").value;
+    //let time_stop = document.getElementById("time_of_end").value;
     let times = [];
 
     if(counter == 0){
@@ -176,8 +176,8 @@ function teams_to_table(){
         document.getElementById("error_message_teams").innerHTML = ""
     }
 
+    /*
     if(time_stop != "" && time_game == 0){
-        console.log("calculating...")
         list_start = time_start.split(":");
         list_stop = time_stop.split(":");
         start_hour = parseInt(list_start[0]);
@@ -187,7 +187,7 @@ function teams_to_table(){
         time_for_games = min_for_turnier-(matches.length * time_break);
         time_game = Math.floor(time_for_games/(matches.length/number_gyms));
     }
-    
+    */
     //here we split the set start time into hours and minutes(so that i didn't have to deal with the JavaScript time format)
     time = time_start.split(':');
     let minutes = parseInt(time[1]);
@@ -210,7 +210,7 @@ function teams_to_table(){
         
         //here we make this row element a constant so that we dont accidentaly change it during the process
         const tablebodyrow = document.getElementById(stirng);
-
+        
         //here the first element of the row is prepared wich will always be the time element
         tablebodyelement = document.createElement("th");
         tablebodyelement.setAttribute("scope","row");
@@ -243,7 +243,7 @@ function teams_to_table(){
         //here the game time is added and the same checks are done as in the if statement
         stirng += status;
         stirng += ' - ';
-        minutes = minutes + time_game * 1;
+        minutes = minutes + time_game;
         while (minutes>=60){
             minutes-=60;
             hours += 1;
@@ -277,8 +277,6 @@ function teams_to_table(){
             tablebodyrow.appendChild(tablebodyelement);
         }
     }
-    //const csv_button = document.getElementById("csv_export");
-    //csv_button.onclick = csv_prepare(matchesInRows,times,number_gyms);
     csv_times = times;
     csv_matches_inRow = matchesInRows;
 }
